@@ -7,7 +7,6 @@ services:
       - '8188:5000'
     volumes:
       - '/var/www/remotely:/remotely-data'
-    restart: unless-stopped
     image: 'immybot/remotely:latest'
 
 networks:
