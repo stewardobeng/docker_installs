@@ -669,9 +669,9 @@ startInstall()
         cd
     fi
 
-    echo "All docker applications have been added to the docker network my-main-app"
+    echo "All docker applications have been added to the docker network my-main-net"
     echo ""
-    echo "If you add more docker applications to this server, make sure to add them to the my-main-app network."
+    echo "If you add more docker applications to this server, make sure to add them to the my-main-net network."
     echo "You can then use them by container name in NGinX Proxy Manager if so desired."
 
     exit 1
