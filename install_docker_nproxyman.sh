@@ -346,7 +346,7 @@ startInstall()
 
         if [[ "$OS" == "7" ]]; then
             echo "    1. Installing dependencies..."
-            (sudo apt-get install libffi-dev libssl-dev python3-dev python3 python3-pip) >> ~/docker-script-install.log 2>&1
+            (sudo apt-get install -y libffi-dev libssl-dev python3-dev python3 python3-pip) >> ~/docker-script-install.log 2>&1
             # Show our spinner
             pid=$   # Process ID of the previous running command
             spin='-\|/'
