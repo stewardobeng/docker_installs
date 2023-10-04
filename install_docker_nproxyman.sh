@@ -169,7 +169,7 @@ startInstall()
 
             if [[ "$OS" == 2 ]]; then
                 echo "    5. Starting Docker Service"
-                sudo systemctl docker start >> ~/docker-script-install.log 2>&1
+                sudo systemctl start docker >> ~/docker-script-install.log 2>&1
             fi
         fi
 
