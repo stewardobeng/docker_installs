@@ -48,7 +48,7 @@ Answering "n" to any of them will cause them to be skipped.
 
 ### NOTE
 * You must have Docker-CE (or some version of Docker) installed in order to run any of the other three packages.
-* You must have Docker-Compose installed in order to run NGinX Proxy Manager, Portainer-CE, or Navidrome with this script.
+* You must have Docker-Compose installed in order to run NGinX Proxy Manager, Portainer-CE, or any of the apps offered with this script.
 
 Before prompting to install Docker or Docker-Compose, I do try to see if you already have them installed, and I skip the prompt if you do (or I try to anyway).
 

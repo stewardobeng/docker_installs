@@ -6,7 +6,7 @@ services:
     ports:
       - '8188:5000'
     volumes:
-      - '/var/www/remotely:/remotely-data'
+      - './var/www/remotely:/remotely-data'
     image: 'immybot/remotely:latest'
 
 networks:

@@ -692,7 +692,7 @@ echo "        --  Description        " $(lsb_release -d)
 echo "        --  OS Version        " $(lsb_release -r)
 echo "        --  Code Name        " $(lsb_release -c)
 echo ""
-echo "------------------------------------------------"
+echo "------------------------------------------------------"
 echo ""
 
 PS3="Please select the number for your OS / distro: "
@@ -700,10 +700,10 @@ select _ in \
     "CentOS 7 / 8 / Fedora" \
     "Debian 10 / 11" \
     "Ubuntu 18.04" \
-    "Ubuntu 20.04 / 21.04 / 22.04" \
+    "Ubuntu 20.04 / 21.04 / 22.04+" \
     "Arch Linux" \
     "Open Suse"\
-    "Arm64 / Raspian"\
+    "Arm64 / Raspbian"\
     "End this Installer"
 do
   case $REPLY in
