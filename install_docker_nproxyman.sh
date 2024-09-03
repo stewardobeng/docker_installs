@@ -383,7 +383,7 @@ startInstall()
         echo ""
 
         echo "      - Docker Compose Version is now: " 
-        DOCKCOMPV=$(docker compose --version)
+        DOCKCOMPV=$(docker compose version)
         echo "        "${DOCKCOMPV}
         echo ""
         echo ""
