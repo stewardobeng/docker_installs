@@ -4,6 +4,7 @@ networks:
     external: false
   my-main-net:
     external: true
+    name: my-main-net
 
 services:
   hbbs:
