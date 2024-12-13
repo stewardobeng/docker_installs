@@ -2,6 +2,8 @@
 networks:
   rustdesk-net:
     external: false
+  my-main-net:
+    external: true
 
 services:
   hbbs:

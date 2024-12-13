@@ -25,17 +25,27 @@ installApps()
 
     if [[ "$ISCOMP" == *"command not found"* ]]; then
         read -rp "Docker Compose (y/n): " DCOMP
+        echo ""
+        echo ""
     else
         echo "Docker Compose appears to be installed."
         echo ""
         echo ""
     fi
 
-    read -rp "NGinX Proxy Manager (y/n): " NPM
-    read -rp "Navidrome (y/n): " NAVID
-    read -rp "Portainer-CE (y/n): " PTAIN
-    read -rp "Remotely - Remote Desktop Support (y/n): " REMOTELY
-    read -rp "Guacamole - Remote Desktop Protocol in the Browser (y/n): " GUAC
+    read -rp "Do you want to choose any Docker based applications to install as well? (y/n): " INSTALLAPPS
+    echo ""
+    echo ""
+
+    if [[ "$INSTALLAPPS" == [yY] ]]; then
+        read -rp "NGinX Proxy Manager (y/n): " NPM
+        read -rp "Navidrome (y/n): " NAVID
+        read -rp "Portainer-CE (y/n): " PTAIN
+        read -rp "Remotely - Remote Desktop Support (y/n): " REMOTELY
+        read -rp "Guacamole - Remote Desktop Protocol in the Browser (y/n): " GUAC
+        read -rp "Uptime Kuma - An Uptime Monitor with Notifications (y/n): " KUMA
+        read -rp "RustDesk Server - a Remote Desktop / Access Relay Server (y/n): " RUST
+    fi
 
     if [[ "$PTAIN" == [yY] ]]; then
         echo ""
@@ -628,6 +638,105 @@ startInstall()
         echo ""
         echo "      It is highly recommended that you create a new admin user, and"
         echo "      delete / disable the default user."
+        echo ""
+        echo ""
+        sleep 3s
+        cd
+    fi
+
+    if [[ "$RUST" == [yY] ]]; then
+        echo "##########################################"
+        echo "###         Installing RustDesk        ###"
+        echo "##########################################"
+    
+        # pull a rustdesk server docker-compose file from gitlab
+        echo ""
+        read -rp "Please enter a FQDN (fully qualified domain name) or IP address for your RustDesk server (e.g. rust.mydomain.com): " RUSTFQDN
+        echo ""
+        echo ""
+        echo "    1. Pulling a the RustDesk docker-compose.yml file."
+
+        mkdir -p docker/rustdesk/{hbbr,hbbs}
+        cd docker/rustdesk
+
+        curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/docker_compose_rustdesk-server.yml -o docker-compose.yml >> ~/docker-script-install.log 2>&1
+
+        echo ""
+        echo ""
+        echo "    2. Pulling the environment variable file needed (.env)..."
+        curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/rustdesk_env -o .env >> ~/docker-script-install.log 2>&1
+        echo ""
+        echo ""
+        echo "    3. Creating your encryption key..."
+
+        cd hbbs
+        # generate a secret key - this is an ed25519 key
+        ssh-keygen -t ed25519 -f ./id_ed25519
+
+        yoursecretkey=$(<id_ed25519.pub)
+
+        cd ..
+
+        # replace the text in the sample .env we just made with actual values
+        sed -i 's/RUSTDESK_FQDN=/RUSTDESK_FQDN=$(RUSTFQDN)/g' .env
+        sed -i 's/RUSTDESK_SECRET_KEY=/RUSTDESK_SECRET_KEY=$(yoursecretkey)/g' .env
+        sleep 3s
+
+        echo "    4. Running the docker-compose.yml to pull and start the RustDesk Server..."
+        echo ""
+
+        if [[ "$OS" == "1" ]]; then
+          docker compose up -d
+        else
+          sudo docker compose up -d
+        fi
+
+        currDir=$(pwd)
+
+        echo "    5. Your RustDesk server should now be running."
+        echo ""
+        echo "      You can setup a RustDesk client with the FQDN you provided,"
+        echo "      and the secret key: $yoursecretkey "
+        echo ""
+        echo "      If needed you can find this key again with the command:"
+        echo "          cat $currDir/hbbs/id_ed25119.pub"
+        echo ""
+        sleep 3s
+        cd
+    fi
+
+    if [[ "$KUMA" == [yY] ]]; then
+        echo "##########################################"
+        echo "###         Installing UptimeKuma      ###"
+        echo "##########################################"
+    
+        # pull an uptime kuma docker-compose file from gitlab
+        echo ""
+        echo ""
+        echo "    1. Pulling a the Uptime Kuma docker-compose.yml file."
+
+        mkdir -p docker/uptime-kuma
+        cd docker/uptime-kuma
+
+        curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/docker_compose_uptime_kuma.yml -o docker-compose.yml >> ~/docker-script-install.log 2>&1
+
+        echo ""
+        echo ""
+        echo "    2. Running the docker-compose.yml to pull and start Uptime Kuma..."
+        echo ""
+
+        if [[ "$OS" == "1" ]]; then
+          docker compose up -d
+        else
+          sudo docker compose up -d
+        fi
+
+        echo "    3. You can find the Uptime Kuma folder at ~/docker/uptime-kuma..."
+        echo ""
+        echo "      You can now navigate in your browser to yoru server IP at"
+        echo "      port number 3001 to reach the Uptime Kuma login page."
+        echo ""
+        echo "      You'll create your initial user as an admin on the first login."
         echo ""
         echo ""
         sleep 3s
