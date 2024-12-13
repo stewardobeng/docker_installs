@@ -577,9 +577,6 @@ startInstall()
         echo "    Creating a random password for Postrgres."
         postgrespw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 
-        echo "Password created is $postgrespw"
-        sleep 10s
-
         # pull a remotely docker-compose file from gitlab
         echo "    1. Pulling a default Remotely docker-compose.yml file."
 
@@ -587,15 +584,16 @@ startInstall()
         cd docker/remotely
 
         curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/docker_compose_remotely.yml -o docker-compose.yml >> ~/docker-script-install.log 2>&1
+        
         echo "    2. Pulling the necessary environment variable file..."
-
 
         curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/remotely_env -o .env >> ~/docker-script-install.log 2>&1
         
         # replace the existing default password with our randomly generated db password
+        # Define the line to replace with
         var="POSTGRES_PASSWORD=$postgrespw"
 
-        # Define the line to search for
+        # Define the line to search for (to be replaced)
         search_line="POSTGRES_PASSWORD=changeMe1"
 
         # Define the file to modify
@@ -708,8 +706,23 @@ startInstall()
         cd ..
 
         # replace the text in the sample .env we just made with actual values
-        sed -i 's/RUSTDESK_FQDN=/RUSTDESK_FQDN=$(RUSTFQDN)/g' .env
-        sed -i 's/RUSTDESK_SECRET_KEY=/RUSTDESK_SECRET_KEY=$(secondpartsecretkey)/g' .env
+        # replace the blank FQDN and secret key
+
+        # define the line to replace with
+        var="RUSTDESK_FQDN=$RUSTFQDN"
+        var2="RUSTDESK_SECRET_KEY=$secondpartsecretkey"
+
+        # Define the line to search for (be replaced)
+        search_line="RUSTDESK_FQDN="
+        search_line2="RUSTDESK_SECRET_KEY="
+
+        # Define the file to modify
+        file=".env"
+
+        # Use awk to replace the line
+        awk -v var="$var" '/'"$search_line"'/ { $0 = var } 1' "$file" > temp && mv temp "$file"
+        awk -v var2="$var2" '/'"$search_line2"'/ { $0 = var2 } 1' "$file" > temp && mv temp "$file"
+        
         sleep 3s
 
         echo "    4. Running the docker-compose.yml to pull and start the RustDesk Server..."
