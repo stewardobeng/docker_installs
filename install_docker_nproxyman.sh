@@ -574,8 +574,11 @@ startInstall()
         echo ""
         echo ""
         sleep 3s
+        echo "    Creating a random password for Postrgres."
+        postgrespw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 
-        postgres_pw=tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32
+        echo "Password created is $postgrespw"
+        sleep 10s
 
         # pull a remotely docker-compose file from gitlab
         echo "    1. Pulling a default Remotely docker-compose.yml file."
@@ -584,17 +587,22 @@ startInstall()
         cd docker/remotely
 
         curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/docker_compose_remotely.yml -o docker-compose.yml >> ~/docker-script-install.log 2>&1
-
-        echo ""
-        echo ""
         echo "    2. Pulling the necessary environment variable file..."
-        echo ""
-        echo ""
+
 
         curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/remotely_env -o .env >> ~/docker-script-install.log 2>&1
         
-        # replace the default password with a randomly generated postgres password
-        sed -i 's/POSTGRES_PASSWORD=/POSTGRES_PASSWORD=$(postgres_pw)/g' .env
+        # replace the existing default password with our randomly generated db password
+        var="POSTGRES_PASSWORD=$postgrespw"
+
+        # Define the line to search for
+        search_line="POSTGRES_PASSWORD=changeMe1"
+
+        # Define the file to modify
+        file=".env"
+
+        # Use awk to replace the line
+        awk -v var="$var" '/'"$search_line"'/ { $0 = var } 1' "$file" > temp && mv temp "$file"
 
         echo "    3. Running the docker-compose.yml to pull and start Remotely..."
         echo ""
@@ -605,7 +613,7 @@ startInstall()
           sudo docker compose up -d
         fi
 
-        echo "    3. You can find the Remotely folder at ~/docker/remotely..."
+        echo "    4. You can find the Remotely folder at ~/docker/remotely..."
         echo ""
         echo "      Navigate to your server hostname / IP address on port 5000, unless you changed it,"
         echo "      to setup your new Remotely installation."
@@ -695,7 +703,7 @@ startInstall()
 
         rm id_ed25519.pub
 
-        echo "$secondpartsecrekey" > id_ed25519.pub
+        echo "$secondpartsecretkey" > id_ed25519.pub
 
         cd ..
 

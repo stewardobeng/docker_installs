@@ -1,6 +1,6 @@
 # Database variables
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=changeMe1 # <--- you need to change this
+POSTGRES_PASSWORD=changeMe1
 POSTGRES_DB=Remotely
 
 # Internal docker network variables
