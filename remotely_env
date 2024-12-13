@@ -1,0 +1,11 @@
+# Database variables
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=changeMe1 # <--- you need to change this
+POSTGRES_DB=Remotely
+
+# Internal docker network variables
+PREFERRED_SUBNET=172.28.0.0/16 # <-- if you don't know, leave alone
+PREFERRED_GATEWAY=172.28.0.1   # <-- if you don't know, leave alone
+
+# Host network variables
+PREFERRED_HOST_PORT=5000       # <-- can be changed if necessary, used to access WebUI

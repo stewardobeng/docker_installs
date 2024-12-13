@@ -570,6 +570,13 @@ startInstall()
         echo "###          Install Remotely          ###"
         echo "##########################################"
     
+        echo "    Starging the Remotely Install..."
+        echo ""
+        echo ""
+        sleep 3s
+
+        postgres_pw=tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32
+
         # pull a remotely docker-compose file from gitlab
         echo "    1. Pulling a default Remotely docker-compose.yml file."
 
@@ -580,7 +587,16 @@ startInstall()
 
         echo ""
         echo ""
-        echo "    2. Running the docker-compose.yml to pull and start Remotely..."
+        echo "    2. Pulling the necessary environment variable file..."
+        echo ""
+        echo ""
+
+        curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/remotely_env -o .env >> ~/docker-script-install.log 2>&1
+        
+        # replace the default password with a randomly generated postgres password
+        sed -i 's/POSTGRES_PASSWORD=/POSTGRES_PASSWORD=$(postgres_pw)/g' .env
+
+        echo "    3. Running the docker-compose.yml to pull and start Remotely..."
         echo ""
 
         if [[ "$OS" == "1" ]]; then
@@ -591,12 +607,12 @@ startInstall()
 
         echo "    3. You can find the Remotely folder at ~/docker/remotely..."
         echo ""
-        echo "      Navigate to your server hostname / IP address on port 8188 to setup"
-        echo "      your new Remotely installation."
+        echo "      Navigate to your server hostname / IP address on port 5000, unless you changed it,"
+        echo "      to setup your new Remotely installation."
         echo ""
         echo "      You will likely want to create a reverse proxy entry in NGinX Proxy Manager"
         echo "      for your new Remotely server.  If so, also make sure to set the"
-        echo "      'Require https' option in the Remotely Settings."
+        echo "      'Require https' option in the Remotely Settings to true (checked)."
         echo ""
         echo ""
         sleep 3s
@@ -675,11 +691,17 @@ startInstall()
 
         yoursecretkey=$(<id_ed25519.pub)
 
+        secondpartsecretkey=$(echo "$yoursecretkey" | cut -d ' ' -f 2)
+
+        rm id_ed25519.pub
+
+        echo "$secondpartsecrekey" > id_ed25519.pub
+
         cd ..
 
         # replace the text in the sample .env we just made with actual values
         sed -i 's/RUSTDESK_FQDN=/RUSTDESK_FQDN=$(RUSTFQDN)/g' .env
-        sed -i 's/RUSTDESK_SECRET_KEY=/RUSTDESK_SECRET_KEY=$(yoursecretkey)/g' .env
+        sed -i 's/RUSTDESK_SECRET_KEY=/RUSTDESK_SECRET_KEY=$(secondpartsecretkey)/g' .env
         sleep 3s
 
         echo "    4. Running the docker-compose.yml to pull and start the RustDesk Server..."
@@ -696,7 +718,7 @@ startInstall()
         echo "    5. Your RustDesk server should now be running."
         echo ""
         echo "      You can setup a RustDesk client with the FQDN you provided,"
-        echo "      and the secret key: $yoursecretkey "
+        echo "      and the secret key: $secondpartsecretkey "
         echo ""
         echo "      If needed you can find this key again with the command:"
         echo "          cat $currDir/hbbs/id_ed25119.pub"
@@ -707,7 +729,7 @@ startInstall()
 
     if [[ "$KUMA" == [yY] ]]; then
         echo "##########################################"
-        echo "###         Installing UptimeKuma      ###"
+        echo "###         Installing Uptime Kuma     ###"
         echo "##########################################"
     
         # pull an uptime kuma docker-compose file from gitlab
