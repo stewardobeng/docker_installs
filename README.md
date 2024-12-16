@@ -6,7 +6,7 @@ I got tired of running individual commands all the time, so I created some scrip
 
 ## Using this script
 
-You can use the script by simpling pulling it down with or curl, changing the permissions, and running it. 
+You can use the script by simply pulling it down with or curl, changing the permissions, and running it. 
 
 1. Pull down a copy with the command
 
