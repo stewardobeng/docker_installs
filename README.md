@@ -6,35 +6,42 @@ I got tired of running individual commands all the time, so I created some scrip
 
 ## Using this script
 
+You can use the script by simpling pulling it down with or curl, changing the permissions, and running it. 
+
+1. Pull down a copy with the command
+
+`wget -O install-docker.sh https://gitlab.com/bmcgonag/docker_installs/-/raw/main/install_docker_nproxyman.sh?ref_type=heads`
+
+2. Change the permission to make the file executable:
+
+`chmod +x install-docker.sh`
+
+3. Run it with
+
+`./install-docker.sh`
+
+## Contributing by making changes
+
 1. Clone the repo
 `git clone https://gitlab.com/bmcgonag/docker_installs.git`
 
-, or copy / paste the code from the `install_docker_nproxyman.sh` file into a file on your server. 
-
-`nano docker-install.sh`
-
-to open a text editor in the terminal, then use CTRL + Shift + V to paste into it.
-
-Save with CTRL + O, then Enter to confirm, and exit the nano editor with CTRL + X.
-
-2. Change the permissions of the .sh file to make it executable with.
-
-`chmod +x docker-install.sh`
-
-3. Run the installer with
-
-`./docker-install.sh`
 
 ## Prompts from the script:
-First, you'll be prompted to select the number for your OS / Distro.  Currently I support RaspbianOS (latest), CentOS 7 and 8, Debian 10 and 11, Ubuntu 18.04, 20.04, 22.04, 23.05, Arch Linux, and Open Suse (tested on Leap 15.4). 
+First, you'll be prompted to select the number for your OS / Distro.  Currently I support RaspbianOS (latest), CentOS 7 and 8, Debian 10 and 11, Ubuntu 18.04 20.04 22.04 23.04 24.04 and on, Arch Linux, and Open Suse (tested on Leap 15.4). 
 
 Next, you'll be asked to answer "y" to any of the four software packages you'd like to install. 
 - Docker-CE (you'll need this for the others to work)
 - Docker-Compose (you'll need this for any of the applications to start properly)
+Note: I try to detect if Docker and Docker Compose are already installed and running...and won't prompt if they are found.
+
+Next, you'll be asked if you want to install any applications with Docker and Docker compose. This is a yes / no (y/n) question. If you answer 'y', you'll be asked to answer y/n for each application I offer.
+
 - NGinx Proxy Manager
 - Navidrome (music player)
 - Remotely (Remote Desktop Support Tool)
 - Guacamole (Remote Desktop Protocol in the Browser)
+- RustDesk Server
+- Uptime Kuma
 - Portainer-CE
   - if you answer y to Portainer, you'll be asked another question
 
@@ -45,6 +52,14 @@ Do you want
 Make that selection, and the install will continue.
 
 Answering "n" to any of them will cause them to be skipped.
+
+### RustDesk Install
+- You'll be asked to provide an FQDN for the install. This can be a domain / subdomain name, or IP address
+- The system will auto generate the key for your server, so you can use it in a secured way (others can't just connect by knowing the URL).  You'll be shown the key in the text when it is generated, but you can also find it in the docker/rustdesk/hbbs folder afterward if needed. The file is id_ed25519.pub. 
+  - When the key is generated, you'll be asked to provide a password for the key, you can just press enter and leave the key blank (and I recommend you do in this case). 
+
+### Remotely Install
+- Remotely needs a postgres password generated, so th escript auto-generates a 32 character random password for you, and applies it to the .env file.  There should be nothing for you to use on this, it's just an FYI.
 
 ### NOTE
 * You must have Docker-CE (or some version of Docker) installed in order to run any of the other three packages.
