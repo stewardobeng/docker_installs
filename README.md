@@ -68,9 +68,9 @@ Answering "n" to any of them will cause them to be skipped.
 Before prompting to install Docker or Docker-Compose, I do try to see if you already have them installed, and I skip the prompt if you do (or I try to anyway).
 
 ## Recent changes
-- Added option for Raspbian install with Arm64 Chips.
-- Added Remotely as an application option
-- Added Guacamole as an application option
+ - Updated Remotely to use Postgres with randomly generate postgres db password
+ - Added RustDesk
+ - Add Uptime Kuma
 
 ## Future Work
 - [X] Make it work for Raspberry Pi
