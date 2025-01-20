@@ -45,6 +45,7 @@ installApps()
         read -rp "Guacamole - Remote Desktop Protocol in the Browser (y/n): " GUAC
         read -rp "Uptime Kuma - An Uptime Monitor with Notifications (y/n): " KUMA
         read -rp "RustDesk Server - a Remote Desktop / Access Relay Server (y/n): " RUST
+        read -rp "Beszel Monitoring Hub - a lightweight system mointoring solution (y/n): " BESZEL
     fi
 
     if [[ "$PTAIN" == [yY] ]]; then
@@ -778,6 +779,44 @@ startInstall()
         echo ""
         echo "      You can now navigate in your browser to yoru server IP at"
         echo "      port number 3001 to reach the Uptime Kuma login page."
+        echo ""
+        echo "      You'll create your initial user as an admin on the first login."
+        echo ""
+        echo ""
+        sleep 3s
+        cd
+    fi
+
+    if [[ "$BESZEL" == [yY] ]]; then
+        echo "##########################################"
+        echo "###         Installing Beszel          ###"
+        echo "##########################################"
+    
+        # pull an uptime kuma docker-compose file from gitlab
+        echo ""
+        echo ""
+        echo "    1. Pulling a the Uptime Kuma docker-compose.yml file."
+
+        mkdir -p docker/beszel
+        cd docker/beszel
+
+        curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/docker_compose_beszel.yml -o docker-compose.yml >> ~/docker-script-install.log 2>&1
+
+        echo ""
+        echo ""
+        echo "    2. Running the docker-compose.yml to pull and start Uptime Kuma..."
+        echo ""
+
+        if [[ "$OS" == "1" ]]; then
+          docker compose up -d
+        else
+          sudo docker compose up -d
+        fi
+
+        echo "    3. You can find the Beszel folder at ~/docker/beszel..."
+        echo ""
+        echo "      You can now navigate in your browser to yoru server IP at"
+        echo "      port number 8090 to reach the Uptime Kuma login page."
         echo ""
         echo "      You'll create your initial user as an admin on the first login."
         echo ""
