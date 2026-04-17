@@ -209,7 +209,7 @@ installApps()
     prompt_component_action "Docker-CE" "$DOCKER_INSTALLED" DOCK_ACTION
     prompt_component_action "Docker Compose" "$COMPOSE_INSTALLED" DCOMP_ACTION
 
-    read -rp "Do you want to choose any Docker based applications to install as well? (y/n): " INSTALLAPPS
+    read -rp "Do you want to choose any Docker based applications to install or update as well? (y/n): " INSTALLAPPS
     echo ""
     echo ""
 
